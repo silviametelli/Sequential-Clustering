@@ -28,15 +28,11 @@ def cluster_likelihood(num_subjects,feature_counter):
         feature_cluster_prior_count=int(num_subjects*feature_cluster_size/2.0) if f not in feature_prior_counts else feature_prior_counts[f]
         p=(feature_cluster_prior_count+1)/float((total_num_subjects+2)*feature_cluster_size)
         feature_cluster_alpha,feature_cluster_beta=beta_parameters(num_features,p)
-#        feature_cluster_alpha=(feature_cluster_prior_count+1)/float((num_subjects+2)*feature_cluster_size)
-#        feature_cluster_beta=(num_subjects*feature_cluster_size-feature_cluster_prior_count+1)/float((num_subjects+2)*feature_cluster_size)
         likelihood+=cluster_likel(num_subjects*feature_cluster_size,feature_counter[f],feature_cluster_alpha,feature_cluster_beta)
         n0-=feature_cluster_size
     for f in feature_sizes:
         if f not in feature_counter:
             feature_cluster_prior_count=int(num_subjects/2.0) if f not in feature_prior_counts else feature_prior_counts[f]
-#            feature_cluster_alpha=(feature_cluster_prior_count+1)/float((num_subjects+2)*feature_sizes[f])
-#            feature_cluster_beta=(num_subjects*feature_sizes[f]-feature_cluster_prior_count+1)/float((num_subjects+2)*feature_sizes[f])
             p=(feature_cluster_prior_count+1)/float((total_num_subjects+2)*feature_sizes[f])
             feature_cluster_alpha,feature_cluster_beta=beta_parameters(num_features,p)
 
@@ -45,16 +41,12 @@ def cluster_likelihood(num_subjects,feature_counter):
         else:
             for f in feature_prior_counts:
                 if f not in feature_counter and f not in feature_sizes:
-#                    feature_cluster_alpha=(feature_prior_counts[f]+1)/float((num_subjects+2))
-#                    feature_cluster_beta=(num_subjects-feature_prior_counts[f]+1)/float((num_subjects+2))
                     p=(feature_prior_counts[f]+1)/float((total_num_subjects+2))
                     feature_cluster_alpha,feature_cluster_beta=beta_parameters(num_features,p)
                     likelihood+=cluster_likel(num_subjects*feature_prior_counts[f],0,feature_cluster_alpha,feature_cluster_beta)
                     n0-1
     if n0>0:
         feature_cluster_prior_count=int(num_subjects*feature_cluster_size/2.0)
- #       feature_cluster_alpha=(feature_cluster_prior_count+1)/float((num_subjects+2)*feature_cluster_size)
-#        feature_cluster_beta=(num_subjects*feature_cluster_size-feature_cluster_prior_count+1)/float((num_subjects+2)*feature_cluster_size)
         p=(feature_cluster_prior_count+1)/float((total_num_subjects+2)*feature_cluster_size)
         feature_cluster_alpha,feature_cluster_beta=beta_parameters(num_features,p)
         likelihood+=n0*cluster_likel(num_subjects,0,feature_cluster_alpha,feature_cluster_beta)
@@ -78,8 +70,7 @@ def cluster_likel(n,x,alpha=1,beta=1):
 
 
 def Dirichlet_prior():
-
-    return 1
+  return 1
 
 
 ########################################################################################
@@ -130,7 +121,6 @@ class Cluster:
 
 
 ####################################################################### end of class
-
 
 def initialise():
  global total_num_subjects,num_features,feature_sizes
@@ -193,8 +183,6 @@ def initialise():
  return cluster_list
 
 
-
-
 def initial_configuration():
     cl_sizes=[]
     cluster_list=initialise()
@@ -208,25 +196,21 @@ def initial_configuration():
     except:
         None
 
-
     for c in range(len(cl_sizes)):
      for j in range(1, cl_sizes[c]):
         cluster_list[c].subjects+=cluster_list[c+1].subjects
         cluster_list[c].feature_counts+=cluster_list[c+1].feature_counts
         cluster_list[c].lik=cluster_list[c].lik+cluster_list[c+1].lik
         cluster_list.pop(c+1)
-        #clustertrial.close()
-        #del other_cluster
         Cluster.count=Cluster.count-1
 
-
-    return cluster_list
-
+        return cluster_list
 
 
 def cluster_similarity(cluster1, cluster2):
     sim=cluster(cluster1,cluster2)-cluster1.lik-cluster2.lik
     return sim
+
 
 def find_most_similar():
   max_similarity= -sys.float_info.max
@@ -237,6 +221,7 @@ def find_most_similar():
         best_pair=[i,j]
         max_similarity=similarity
   return best_pair, max_similarity
+
 
 def merge_clusters(i,j, sim=""):
   if i>j:
@@ -256,6 +241,7 @@ def merge_clusters(i,j, sim=""):
           cluster_list[i].cluster_similarity[cl]=sim
           cl.cluster_similarity[cluster_list[i]]=sim
 
+
 def get_clustering_from_cluster_list():
     clustering={}
     counter=0
@@ -264,6 +250,7 @@ def get_clustering_from_cluster_list():
         for sub in cl.subjects:
             clustering[sub]=counter
     return clustering
+
 
 def user_clustering():
   max_l=Cluster.lik
@@ -294,11 +281,8 @@ def New_clustering(info,M,Reading_file):
 
     cluster_list_old=info[0]
     feature_totals=info[1]
-
-
     L=len(cluster_list_old)
     cluster_list=initialise2(cluster_list_old,Reading_file)
-
 
     # Find highest similarities of all clusters with the last one added
     max_similarity= -sys.float_info.max
@@ -308,7 +292,7 @@ def New_clustering(info,M,Reading_file):
         if sims_with_last>max_similarity:
             max_similarity=sims_with_last
             best_pair=[i,L]
-#merging of clusters
+    #merging of clusters
     if max_similarity>0:
      cluster_list[best_pair[0]].merge(cluster_list[best_pair[1]], max_similarity)
      cluster_list.pop(L)
@@ -341,18 +325,12 @@ def initialise2(cluster_list_old,Reading_file):
  for feature in key_val[-1].split(feature_separator):
       feature_totals[feature]+=1
 
-
- #total_num_subjects=max(total_num_subjects,len(cluster_list))
- # if informative_prior:
- #         feature_prior_counts=feature_totals
- #         print feature_prior_counts
  num_features=len(feature_totals)
  Cluster.lik=0
  for cl in cluster_list:
      selfLik=cluster_likelihood(len(cl.subjects),cl.feature_counts)
      cl.lik=selfLik
      Cluster.lik+=cl.lik
-
 
 
  for i in range(len(cluster_list)-1):
@@ -378,7 +356,6 @@ def main():
   max_data=10 ## 280 users correspond to first 1000 event times
   Reading_file_initial="data_ordered.txt"
   Reading_file="Reading_file.txt"
-
 
 
   #### ORDERED DATA, format needed to get compacted users:
@@ -418,6 +395,7 @@ def main():
 
   output=sorted(clustering.items(),key=operator.itemgetter(0))
   print [x[1] for x in output]
+  
 
 ################ NEW Sequential CLUSTERING
 
