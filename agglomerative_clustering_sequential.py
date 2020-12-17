@@ -3,10 +3,11 @@ import sys
 import operator
 from math import log, lgamma
 from collections import Counter
-from NewFunctions import New_clustering
+#from NewFunctions import New_clustering
 import linecache
-Reading_file="Toy_data_u_Cs3.txt"
 
+
+######################################### Likelihood part #########################################
 
 def cluster(cluster1,cluster2):
     return cluster_likelihood(len(cluster1.subjects)+len(cluster2.subjects),cluster1.feature_counts+cluster2.feature_counts)
@@ -52,7 +53,7 @@ def cluster_likelihood(num_subjects,feature_counter):
                     n0-1
     if n0>0:
         feature_cluster_prior_count=int(num_subjects*feature_cluster_size/2.0)
-#        feature_cluster_alpha=(feature_cluster_prior_count+1)/float((num_subjects+2)*feature_cluster_size)
+ #       feature_cluster_alpha=(feature_cluster_prior_count+1)/float((num_subjects+2)*feature_cluster_size)
 #        feature_cluster_beta=(num_subjects*feature_cluster_size-feature_cluster_prior_count+1)/float((num_subjects+2)*feature_cluster_size)
         p=(feature_cluster_prior_count+1)/float((total_num_subjects+2)*feature_cluster_size)
         feature_cluster_alpha,feature_cluster_beta=beta_parameters(num_features,p)
@@ -62,11 +63,11 @@ def cluster_likelihood(num_subjects,feature_counter):
 
 
 def beta_parameters(n,mu):
-    s=((mu*(1-mu))/float(n))**0.25
-    a=((1-mu)/float(s)-1/float(mu))*(mu**2)
-    b=a*(1/float(mu) - 1)
-    #a,b=1
-    return a,b
+     s=((mu*(1-mu))/float(n))**0.25
+     a=((1-mu)/float(s)-1/float(mu))*(mu**2)
+     b=a*(1/float(mu) - 1)
+     return a,b
+
 
 
 def cluster_likel(n,x,alpha=1,beta=1):
@@ -74,6 +75,12 @@ def cluster_likel(n,x,alpha=1,beta=1):
       sys.stderr.write("Error: x>n\n")
       exit()
   return lgamma(alpha+beta)+lgamma(alpha+x)+lgamma(beta+n-x)-lgamma(alpha)-lgamma(beta)-lgamma(alpha+beta+n)
+
+
+def Dirichlet_prior():
+
+    return 1
+
 
 ########################################################################################
 ###############################   CLASS CLUSTER     ####################################
@@ -113,7 +120,7 @@ class Cluster:
 
 
   def __str__(self):
-      print_string='Cluster[Subjects]:'
+      print_string='Cluster[Subjects:'
       for i in range(0,len(self.subjects)):
           print_string += '%d, ' % self.subjects[i]
       print_string += 'Features: '
@@ -124,11 +131,12 @@ class Cluster:
 
 ####################################################################### end of class
 
+
 def initialise():
  global total_num_subjects,num_features,feature_sizes
  global feature_prior_counts,informative_prior
  global Reading_file, feature_totals
- feature_separator=","
+ feature_separator=", "
  cluster_list=[]
  feature_totals=Counter()
  feature_sizes={}
@@ -144,7 +152,7 @@ def initialise():
 
   for line in F:
 
-    if cont<=max_data:
+    if cont<=num_users:
          key_val=line.strip().translate(None,"UC").split("\t")
          try:
              cluster_list+=[Cluster(key_val[0],key_val[1].split(feature_separator))]
@@ -169,7 +177,7 @@ def initialise():
  except:
      if informative_prior:
          feature_prior_counts=feature_totals
-         print(feature_prior_counts)
+         print feature_prior_counts
  num_features=len(feature_totals)
  Cluster.lik=0
  for cl in cluster_list:
@@ -183,6 +191,7 @@ def initialise():
          cluster_list[j].cluster_similarity[cluster_list[i]]=sim
 
  return cluster_list
+
 
 
 
@@ -206,6 +215,8 @@ def initial_configuration():
         cluster_list[c].feature_counts+=cluster_list[c+1].feature_counts
         cluster_list[c].lik=cluster_list[c].lik+cluster_list[c+1].lik
         cluster_list.pop(c+1)
+        #clustertrial.close()
+        #del other_cluster
         Cluster.count=Cluster.count-1
 
 
@@ -221,7 +232,7 @@ def find_most_similar():
   max_similarity= -sys.float_info.max
   for i in range(Cluster.count-1):
     for j in range(i+1, Cluster.count):
-      similarity=cluster_list[i].cluster_similarity[cluster_list[j]] #similarity(cluster_list[i],cluster_list[j])
+      similarity=cluster_list[i].cluster_similarity[cluster_list[j]]  #similarity(cluster_list[i],cluster_list[j])
       if similarity>max_similarity:
         best_pair=[i,j]
         max_similarity=similarity
@@ -256,7 +267,7 @@ def get_clustering_from_cluster_list():
 
 def user_clustering():
   max_l=Cluster.lik
-  while Cluster.count>1:  
+  while Cluster.count>1:
       pair, delta=find_most_similar()
       if delta>0:
           merge_clusters(pair[0],pair[1],delta)
@@ -271,37 +282,153 @@ def user_clustering():
 
 
 
+############################  SEQUENTIAL PART ##########################################
+############################                  ##########################################
+
+def New_clustering(info,M,Reading_file):
+    global last_line
+    global cluster_list,feature_totals
+    last_line=M
+    print 'SEQUENTIAL CLUSTERING: considering line ',M+1
+
+
+    cluster_list_old=info[0]
+    feature_totals=info[1]
+
+
+    L=len(cluster_list_old)
+    cluster_list=initialise2(cluster_list_old,Reading_file)
+
+
+    # Find highest similarities of all clusters with the last one added
+    max_similarity= -sys.float_info.max
+    for i in range(L):
+        sims_with_last=cluster_list[i].cluster_similarity[cluster_list[-1]]
+
+        if sims_with_last>max_similarity:
+            max_similarity=sims_with_last
+            best_pair=[i,L]
+#merging of clusters
+    if max_similarity>0:
+     cluster_list[best_pair[0]].merge(cluster_list[best_pair[1]], max_similarity)
+     cluster_list.pop(L)
+
+    info[0]=cluster_list
+    info[1]=feature_totals
+    return info,M+1
+
+###############################   INITIALISE NEW SINGLETONS    ####################################
+
+def initialise2(cluster_list_old,Reading_file):
+ global total_num_subjects,num_features,feature_sizes
+ global feature_prior_counts,informative_prior,feature_totals
+ global last_line
+ feature_separator=","
+ cluster_list=cluster_list_old
+ feature_sizes={}
+ feature_prior_counts={}
+ informative_prior=False
+ total_num_subjects=last_line+1
+ #read last_line+1
+ line=linecache.getline(Reading_file, last_line+1)
+ #create cluster with data from line las_line+1
+ key_val=line.strip().translate(None,"UC").split("\t")
+
+ try:
+     cluster_list+=[Cluster(key_val[0],key_val[1].split(feature_separator))]
+ except:
+     cluster_list+=[Cluster(Cluster.count,key_val[0].split(feature_separator))]
+ for feature in key_val[-1].split(feature_separator):
+      feature_totals[feature]+=1
+
+
+ #total_num_subjects=max(total_num_subjects,len(cluster_list))
+ # if informative_prior:
+ #         feature_prior_counts=feature_totals
+ #         print feature_prior_counts
+ num_features=len(feature_totals)
+ Cluster.lik=0
+ for cl in cluster_list:
+     selfLik=cluster_likelihood(len(cl.subjects),cl.feature_counts)
+     cl.lik=selfLik
+     Cluster.lik+=cl.lik
+
+
+
+ for i in range(len(cluster_list)-1):
+         sim=cluster_similarity(cluster_list[i],cluster_list[-1])
+         cluster_list[i].cluster_similarity[cluster_list[-1]]=sim
+         cluster_list[-1].cluster_similarity[cluster_list[i]]=sim
+ return cluster_list
+
+
+
 ############################                        ############################
 ############################             MAIN       ############################
 ############################                        ############################
 
+
 def main():
   import os
   os.system("clear")
-  print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+  print '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
   global cluster_list,max_data
-  global Reading_file, feature_totals
-  max_data=3
+  global Reading_file, feature_totals, num_users
+
+  max_data=10 ## 280 users correspond to first 1000 event times
+  Reading_file_initial="data_ordered.txt"
+  Reading_file="Reading_file.txt"
 
 
-  #cluster_list=initial_configuration()
-  print('Initialising...')
+
+  #### ORDERED DATA, format needed to get compacted users:
+  #### cat Fake_Lanl_pairs.txt | cut -f2 -f3 -d "," | sed 's/,/ /g' | sed 's/[UC]//g' | sort -n -k1 -k2 | sed 's/ /,/g' > data_ordered.txt
+
+  with open(Reading_file_initial,'r') as F:
+   F2=open("Reading_file.txt",'a')
+   old_key=""
+   cont_users=1
+   users_set=set()
+   for line in F:
+      if cont_users<=max_data:
+        [key,val] =line.strip().split(",")
+        if key!=old_key:
+            users_set.add(key)
+            comp_set=set()
+            if old_key!="":
+                F2.write(old_key+"\t"+" ".join(str(c) for c in sorted(comp))+"\n")
+            if val not in comp_set:
+             comp_set.add(val)
+             comp=[int(val)]
+        old_key=key
+        else:
+            if val not in comp_set:
+             comp_set.add(val)
+             comp+=[int(val)]
+        cont_users+=1
+   if old_key!="":
+        F2.write(old_key+"\t"+" ".join(str(c) for c in sorted(comp))+"\n")
+   F2.close()
+   num_users=len(users_set)
+
+
+  print 'Initialising...'
   cluster_list=initialise()
   clustering=user_clustering()
+
   output=sorted(clustering.items(),key=operator.itemgetter(0))
-  print(output)
+  print [x[1] for x in output]
 
 ################ NEW Sequential CLUSTERING
 
-
-  print('Start sequential...')
+  print 'Start sequential...'
 
   with open(Reading_file,'r') as f:
       for num_lines, l in enumerate(f):
             pass
   num_lines += 1
 
-  M=max_data
+  M=num_users
   info=[cluster_list,feature_totals]
   for i in range(num_lines-max_data):
     info,M=New_clustering(info,M,Reading_file)
@@ -310,7 +437,11 @@ def main():
 
   clustering=get_clustering_from_cluster_list()
   output=sorted(clustering.items(),key=operator.itemgetter(0))
-  print(output)
+  print output
+
+  with open("agglomerative_sequential_output.txt", 'w') as L:
+      print >>L, "".join(str(x[1])+ "\n" for x in output),
+
 
 
 if __name__ == '__main__':
