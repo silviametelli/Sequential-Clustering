@@ -1,0 +1,13 @@
+./simulate_bicluster_data.py 1000 100 > simulated_1000_100.txt
+
+
+cat simulated_1000_100.txt | sed 's/,/ /g' | sort -n -k1 -k2 | sed 's/ /,/g' | ./comp_mod.py > simulated_data.txt 
+
+
+cat simulated_1000_100.txt | ./get_computer_pairs.py > computer_pairs.txt
+
+cat computer_pairs.txt | sed 's/,/ /g' | sort -n -k1 -k2 | sed 's/ /,/g' | ./comp_mod.py > simulated_column_list.txt 
+
+cat simulated_column_list.txt  | ./get_prior_counts.py > simulated_prior_counts.txt
+
+cat simulated_data.txt | ./clustering_user_prior_counts_AB.py feature_sizes.txt simulated_prior_counts.txt
