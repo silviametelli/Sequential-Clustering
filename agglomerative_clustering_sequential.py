@@ -6,7 +6,6 @@ from collections import Counter
 from NewFunctions import New_clustering
 import linecache
 Reading_file="Toy_data_u_Cs3.txt"
-#Reading_file="u_cs.txt"
 
 
 def cluster(cluster1,cluster2):
@@ -79,6 +78,7 @@ def cluster_likel(n,x,alpha=1,beta=1):
 ########################################################################################
 ###############################   CLASS CLUSTER     ####################################
 ########################################################################################
+
 class Cluster:
   count=0
   lik=0
@@ -122,7 +122,6 @@ class Cluster:
       return print_string
 
 
-
 ####################################################################### end of class
 
 def initialise():
@@ -136,13 +135,6 @@ def initialise():
  feature_prior_counts={}
  informative_prior=True
 
- # try:
- #     F=open(sys.argv[1],"r")
- #     for line in F:
- #         d=line.strip().split()
- #         feature_sizes[d[0]]=int(d[1])
- # except:
- #     None
 
  total_num_subjects=0
 
@@ -179,7 +171,6 @@ def initialise():
          feature_prior_counts=feature_totals
          print(feature_prior_counts)
  num_features=len(feature_totals)
- # print('num_features',num_features)
  Cluster.lik=0
  for cl in cluster_list:
      cl.set_lik()
@@ -190,7 +181,6 @@ def initialise():
          sim=cluster_similarity(cluster_list[i],cluster_list[j])
          cluster_list[i].cluster_similarity[cluster_list[j]]=sim
          cluster_list[j].cluster_similarity[cluster_list[i]]=sim
-     # print('sim',i,'last=',sim)
 
  return cluster_list
 
@@ -216,8 +206,6 @@ def initial_configuration():
         cluster_list[c].feature_counts+=cluster_list[c+1].feature_counts
         cluster_list[c].lik=cluster_list[c].lik+cluster_list[c+1].lik
         cluster_list.pop(c+1)
-        #clustertrial.close()
-        #del other_cluster
         Cluster.count=Cluster.count-1
 
 
@@ -233,7 +221,7 @@ def find_most_similar():
   max_similarity= -sys.float_info.max
   for i in range(Cluster.count-1):
     for j in range(i+1, Cluster.count):
-      similarity=cluster_list[i].cluster_similarity[cluster_list[j]]#similarity(cluster_list[i],cluster_list[j])
+      similarity=cluster_list[i].cluster_similarity[cluster_list[j]] #similarity(cluster_list[i],cluster_list[j])
       if similarity>max_similarity:
         best_pair=[i,j]
         max_similarity=similarity
@@ -271,14 +259,7 @@ def user_clustering():
   while Cluster.count>1:  
       pair, delta=find_most_similar()
       if delta>0:
-#          print cluster_list[pair[0]].subjects,cluster_list[pair[1]].subjects
-  #        print "i'm in user_clustering()-1"
-#          for i in range(0,2):
-#            print cluster_list[i].subjects
           merge_clusters(pair[0],pair[1],delta)
-#          print "i'm in user_clustering()-2"
- #         for i in range(0,1):
-#            print cluster_list[i].subjects
           Cluster.lik+=delta
           if Cluster.lik>max_l:
               max_l=Cluster.lik
@@ -293,6 +274,7 @@ def user_clustering():
 ############################                        ############################
 ############################             MAIN       ############################
 ############################                        ############################
+
 def main():
   import os
   os.system("clear")
@@ -305,22 +287,13 @@ def main():
   #cluster_list=initial_configuration()
   print('Initialising...')
   cluster_list=initialise()
-  # print feature_totals,feature_sizes
-  # for i in range(max_data):
-  #     print cluster(cluster_list[i],cluster_list[-1])
-  #     print cluster_list[i].lik
-  #     print cluster_list[-1].lik
-  #     print cluster(cluster_list[0],cluster_list[1])
-
   clustering=user_clustering()
-  
-  # for i in range(0,len(cluster_list)):
-  #         print 'Cluster %d:' %(i+1),cluster_list[i]
-
   output=sorted(clustering.items(),key=operator.itemgetter(0))
   print(output)
 
 ################ NEW Sequential CLUSTERING
+
+
   print('Start sequential...')
 
   with open(Reading_file,'r') as f:
@@ -328,8 +301,6 @@ def main():
             pass
   num_lines += 1
 
-
-  # num_lines=max_data+2
   M=max_data
   info=[cluster_list,feature_totals]
   for i in range(num_lines-max_data):
