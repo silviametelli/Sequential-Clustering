@@ -1,0 +1,7 @@
+Simulations/
+.DS_store
+Simulations/100-1000_FLAT_NEWBETA/
+Simulations/New_functions.pyc
+*.pyc
+Simulations/*.pyc
+agglomerative_clustering.py 
