@@ -1,5 +1,5 @@
 # Sequential-agglomerative-Clustering
-Performs model-based agglomerative clustering
+Performs model-based agglomerative clustering, data points sequentially added. 
 
 Code to reproduce sequential clustering part of the following publication:
 "Model-based clustering and new edge modelling in large computer networks"
