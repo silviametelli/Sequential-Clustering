@@ -167,7 +167,7 @@ def initialise():
  except:
      if informative_prior:
          feature_prior_counts=feature_totals
-         print feature_prior_counts
+         print(feature_prior_counts)
  num_features=len(feature_totals)
  Cluster.lik=0
  for cl in cluster_list:
@@ -276,7 +276,7 @@ def New_clustering(info,M,Reading_file):
     global last_line
     global cluster_list,feature_totals
     last_line=M
-    print 'SEQUENTIAL CLUSTERING: considering line ',M+1
+    print('SEQUENTIAL CLUSTERING: considering line ',M+1)
 
 
     cluster_list_old=info[0]
@@ -349,7 +349,7 @@ def initialise2(cluster_list_old,Reading_file):
 def main():
   import os
   os.system("clear")
-  print '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
+  print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
   global cluster_list,max_data
   global Reading_file, feature_totals, num_users
 
@@ -389,17 +389,17 @@ def main():
    num_users=len(users_set)
 
 
-  print 'Initialising...'
+  print('Initialising...')
   cluster_list=initialise()
   clustering=user_clustering()
 
   output=sorted(clustering.items(),key=operator.itemgetter(0))
-  print [x[1] for x in output]
+  print([x[1] for x in output])
   
 
 ################ NEW Sequential CLUSTERING
 
-  print 'Start sequential...'
+  prin('Start sequential...')
 
   with open(Reading_file,'r') as f:
       for num_lines, l in enumerate(f):
@@ -415,10 +415,10 @@ def main():
 
   clustering=get_clustering_from_cluster_list()
   output=sorted(clustering.items(),key=operator.itemgetter(0))
-  print output
+  print(output)
 
   with open("agglomerative_sequential_output.txt", 'w') as L:
-      print >>L, "".join(str(x[1])+ "\n" for x in output),
+      print("".join(str(x[1])+ "\n" for x in output), file=L),
 
 
 
