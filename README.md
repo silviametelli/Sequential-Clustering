@@ -7,7 +7,7 @@ Performs model-based agglomerative clustering as follows:
 4. a decision is made whether to add it to existing cluster or create new cluster
 
 
-Run clustering algorithm running the following:
+Perform clustering by running the following:
 
 ```bash
 cat toy_data.txt | agglomerative_clustering_sequential.py > results.txt
