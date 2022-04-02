@@ -3,7 +3,7 @@ import sys
 import operator
 from math import log, lgamma
 from collections import Counter
-#from NewFunctions import New_clustering
+#from utils import New_clustering
 import linecache
 
 
