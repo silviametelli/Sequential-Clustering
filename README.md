@@ -4,9 +4,10 @@
 Performs model-based agglomerative clustering as follows:
 
 1. start with each user in a separate singleton cluster<br /> 
-2. first 10,000 data points clustered according to a notion of multiplicative posterior similarity<br /> 
-3. each subsequent data point sequentially added<br /> 
-4. a decision is made whether to add new data point to existing cluster or create new cluster
+2. each possible cluster merge is evaluated according to a notion of multiplicative posterior similarity<br /> 
+3. first 10,000 data points clustered in batch according 
+4. each subsequent data point sequentially added<br /> 
+5. a decision is made whether to add new data point to existing cluster or create new cluster
 
 ## Data
 
