@@ -18,7 +18,7 @@ U1	C1,C2,C3,C4
 U2	C1,C2,C3,C5
 U3	C3,C6
 ```
-## Run clustering
+## Run clustering algorithm 
 
 Perform clustering and save results by running the following:
 
