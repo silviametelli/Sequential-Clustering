@@ -8,6 +8,17 @@ Performs model-based agglomerative clustering as follows:
 3. each subsequent data point sequentially added<br /> 
 4. a decision is made whether to add it to existing cluster or create new cluster
 
+## Data
+
+In this example we consider a bipartite graph of users connecting to computers in an enterprise computer network.
+Data needs to be in the following format:
+
+```bash
+U1	C1,C2,C3,C4
+U2	C1,C2,C3,C5
+U3	C3,C6
+```
+
 Perform clustering by running the following:
 
 ```bash
