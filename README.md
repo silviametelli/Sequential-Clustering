@@ -18,8 +18,9 @@ U1	C1,C2,C3,C4
 U2	C1,C2,C3,C5
 U3	C3,C6
 ```
+## Run clustering
 
-Perform clustering by running the following:
+Perform clustering and save results by running the following:
 
 ```bash
 cat toy_data.txt | agglomerative_clustering_sequential.py > results.txt
