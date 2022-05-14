@@ -26,3 +26,6 @@ Perform clustering and save results by running the following:
 ```bash
 cat toy_data.txt | agglomerative_clustering_sequential.py > results.txt
 ```
+## Reference
+
+Model-Based Clustering and New Edge Modelling in Large Computer Networks. Metelli, Silvia; Heard, Nick. IEEE Intelligence and Security Informatics Conference, Cybersecurity and Big Data. IEEE.
