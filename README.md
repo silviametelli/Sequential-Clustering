@@ -1,4 +1,4 @@
-# Sequential agglomerative clustering
+# Bayesian (sequential) agglomerative clustering
 ## Community detection in interaction networks
 
 Performs model-based agglomerative clustering as follows:
