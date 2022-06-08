@@ -9,11 +9,11 @@ import linecache
 
 ######################################### Likelihood part #########################################
 
-def cluster(cluster1,cluster2):
-    return cluster_likelihood(len(cluster1.subjects)+len(cluster2.subjects),cluster1.feature_counts+cluster2.feature_counts)
+def cluster(cluster1, cluster2):
+    return cluster_likelihood(len(cluster1.subjects) + len(cluster2.subjects),cluster1.feature_counts + cluster2.feature_counts))
 
-def cluster_likelihood(num_subjects,feature_counter):
-    if len(feature_sizes)==0 and len(feature_prior_counts)==0:
+def cluster_likelihood(num_subjects, feature_counter):
+    if len(feature_sizes) == 0 and len(feature_prior_counts) == 0:
         feature_count_freqs = Counter(feature_counter.values())
         n0 = num_features - len(feature_counter)
         likelihood = n0 * cluster_likel(num_subjects,0) if n0>0 else 0
@@ -58,12 +58,12 @@ def beta_parameters(n,mu):
      s = ((mu * (1-mu)) / float(n))**0.25
      a = ((1-mu) / float(s)-1 / float(mu)) * (mu**2)
      b = a*(1/float(mu) - 1)
-     return a,b
+     return a, b
 
 
 
 def cluster_likel(n,x,alpha=1,beta=1):
-  if x>n:
+  if x > n:
       sys.stderr.write("Error: x>n\n")
       exit()
   return lgamma(alpha+beta) + lgamma(alpha+x) + lgamma(beta+n-x) - lgamma(alpha) - lgamma(beta) - lgamma(alpha+beta+n)
@@ -135,14 +135,12 @@ def initialise():
 
 
  total_num_subjects = 0
-
- cont = 1
+ count = 1
 
  with open(Reading_file, 'r') as F:
 
   for line in F:
-
-    if cont<=num_users:
+    if count <= num_users:
          key_val = line.strip().translate(None,"UC").split("\t")
          try:
              cluster_list += [Cluster(key_val[0],key_val[1].split(feature_separator))]
@@ -154,12 +152,12 @@ def initialise():
              cluster_list += [Cluster(Cluster.count,key_val[0].split(feature_separator))]
          for feature in key_val[-1].split(feature_separator):
               feature_totals[feature] +=1
-         cont += 1
+         count += 1
 
  total_num_subjects = max(total_num_subjects,len(cluster_list))
  informative_prior = False
  try:
-     F=open(sys.argv[3],"r")
+     F = open(sys.argv[3], "r")
      for line in F:
          d = line.strip().split()
          feature_prior_counts[d[0]] = int(d[1])
@@ -217,14 +215,14 @@ def find_most_similar():
   for i in range(Cluster.count-1):
     for j in range(i+1, Cluster.count):
       similarity = cluster_list[i].cluster_similarity[cluster_list[j]]  #similarity(cluster_list[i],cluster_list[j])
-      if similarity>max_similarity:
+      if similarity > max_similarity:
         best_pair = [i,j]
         max_similarity = similarity
   return best_pair, max_similarity
 
 
-def merge_clusters(i,j, sim=""):
-  if i>j:
+def merge_clusters(i, j, sim=""):
+  if i > j:
       temp = i
       i = j
       j = temp
@@ -233,7 +231,7 @@ def merge_clusters(i,j, sim=""):
           cl.cluster_similarity.pop(cluster_list[j])
   cluster_list[i].merge(cluster_list[j], sim)
   cluster_list.pop(j)
-  if i>j:
+  if i > j:
       i = i-1
   for cl in cluster_list:
       if cl!= cluster_list[i]:
@@ -254,14 +252,14 @@ def get_clustering_from_cluster_list():
 
 def user_clustering():
   max_l = Cluster.lik
-  while Cluster.count>1:
-      pair, delta=find_most_similar()
-      if delta>0:
-          merge_clusters(pair[0],pair[1],delta)
+  while Cluster.count > 1:
+      pair, delta = find_most_similar()
+      if delta > 0:
+          merge_clusters(pair[0], pair[1], delta)
           Cluster.lik += delta
-          if Cluster.lik>max_l:
+          if Cluster.lik > max_l:
               max_l = Cluster.lik
-          if Cluster.count==1:
+          if Cluster.count == 1:
               continue_merging = False
       else:
           break
@@ -272,9 +270,9 @@ def user_clustering():
 ############################  SEQUENTIAL PART ##########################################
 ############################                  ##########################################
 
-def New_clustering(info,M,Reading_file):
+def New_clustering(info, M, Reading_file):
     global last_line
-    global cluster_list,feature_totals
+    global cluster_list, feature_totals
     last_line = M
     print('SEQUENTIAL CLUSTERING: considering line ',M+1)
 
@@ -289,11 +287,11 @@ def New_clustering(info,M,Reading_file):
     for i in range(L):
         sims_with_last = cluster_list[i].cluster_similarity[cluster_list[-1]]
 
-        if sims_with_last>max_similarity:
+        if sims_with_last > max_similarity:
             max_similarity = sims_with_last
             best_pair = [i,L]
     #merging of clusters
-    if max_similarity>0:
+    if max_similarity > 0:
      cluster_list[best_pair[0]].merge(cluster_list[best_pair[1]], max_similarity)
      cluster_list.pop(L)
 
@@ -303,9 +301,9 @@ def New_clustering(info,M,Reading_file):
 
 ###############################   INITIALISE NEW SINGLETONS    ####################################
 
-def initialise2(cluster_list_old,Reading_file):
- global total_num_subjects,num_features,feature_sizes
- global feature_prior_counts,informative_prior,feature_totals
+def initialise2(cluster_list_old, Reading_file):
+ global total_num_subjects, num_features, feature_sizes
+ global feature_prior_counts, informative_prior, feature_totals
  global last_line
  feature_separator = ","
  cluster_list = cluster_list_old
@@ -349,7 +347,7 @@ def main():
   import os
   os.system("clear")
   print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-  global cluster_list,max_data
+  global cluster_list, max_data
   global Reading_file, feature_totals, num_users
 
   max_data = 10 ## 280 users correspond to first 1000 event times
@@ -372,18 +370,18 @@ def main():
             users_set.add(key)
             comp_set = set()
             if old_key!="":
-                F2.write(old_key+"\t"+" ".join(str(c) for c in sorted(comp))+"\n")
+                F2.write(old_key + "\t" + " ".join(str(c) for c in sorted(comp)) + "\n"))
             if val not in comp_set:
              comp_set.add(val)
              comp = [int(val)]
-        old_key=key
+        old_key = key
         else:
             if val not in comp_set:
              comp_set.add(val)
              comp += [int(val)]
         cont_users += 1
    if old_key!="":
-        F2.write(old_key+"\t"+" ".join(str(c) for c in sorted(comp))+"\n")
+        F2.write(old_key + "\t" + " ".join(str(c) for c in sorted(comp))+"\n"))
    F2.close()
    num_users = len(users_set)
 
@@ -392,7 +390,7 @@ def main():
   cluster_list = initialise()
   clustering = user_clustering()
 
-  output = sorted(clustering.items(),key=operator.itemgetter(0))
+  output = sorted(clustering.items(), key = operator.itemgetter(0))
   print([x[1] for x in output])
   
 
@@ -407,12 +405,11 @@ def main():
   M = num_users
   info = [cluster_list,feature_totals]
   for i in range(num_lines-max_data):
-    info, M = New_clustering(info,M,Reading_file)
-
+    info, M = New_clustering(info, M, Reading_file)
 
 
   clustering = get_clustering_from_cluster_list()
-  output = sorted(clustering.items(),key=operator.itemgetter(0))
+  output = sorted(clustering.items(), key=operator.itemgetter(0))
   print(output)
 
   with open("agglomerative_sequential_output.txt", 'w') as L:
