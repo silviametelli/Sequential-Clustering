@@ -398,12 +398,11 @@ def main():
 
 ################ NEW Sequential CLUSTERING
 
-  prin('Start sequential...')
+  print('Start sequential...')
 
   with open(Reading_file,'r') as f:
       for num_lines, l in enumerate(f):
-            pass
-  num_lines += 1
+  			num_lines += 1
 
   M = num_users
   info = [cluster_list,feature_totals]
@@ -417,7 +416,7 @@ def main():
   print(output)
 
   with open("agglomerative_sequential_output.txt", 'w') as L:
-      print("".join(str(x[1])+ "\n" for x in output), file=L),
+      print("".join(str(x[1])+ "\n" for x in output), file=L))
 
 
 if __name__ == '__main__':
