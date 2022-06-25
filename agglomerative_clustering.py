@@ -116,7 +116,7 @@ def initialise():
  feature_prior_counts = {}
  informative_prior = True
  try:
-     F = open(sys.argv[1],"r")
+     F = open(sys.argv[1], "r")
      for line in F:
          d = line.strip().split()
          feature_sizes[d[0]] = int(d[1])
