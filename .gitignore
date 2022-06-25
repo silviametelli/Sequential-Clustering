@@ -1,4 +1,5 @@
 .DS_store
+.idea
 Simulations/100-1000_FLAT_NEWBETA/
 Simulations/New_functions.pyc
 *.pyc
