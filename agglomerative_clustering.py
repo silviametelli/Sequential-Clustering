@@ -203,6 +203,7 @@ def get_clustering_from_cluster_list():
             clustering[sub] = counter
     return clustering
 
+
 def user_clustering():
   max_l = Cluster.lik
   while Cluster.count > 1:
@@ -212,8 +213,6 @@ def user_clustering():
           Cluster.lik += delta
           if Cluster.lik > max_l:
               max_l = Cluster.lik
-          if Cluster.count == 1:
-              continue_merging = False
       else:
           break
   return get_clustering_from_cluster_list()
