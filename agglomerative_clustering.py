@@ -73,6 +73,11 @@ def cluster_likel(n, x, alpha=1, beta=1):
 ########################################################################################
 
 class Cluster:
+    '''Creates a Cluster with subjects as attribute and the following methods:
+    1/ delete clusters if merged
+    2/ merge two clusters
+    3/ evaluate similarity'''
+
   count = 0
   lik = 0
   def __init__(self, subject, features = []):
