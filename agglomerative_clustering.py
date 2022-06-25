@@ -11,7 +11,6 @@ def cluster(cluster1, cluster2):
     return cluster_likelihood(len(cluster1.subjects) + len(cluster2.subjects),
                               cluster1.feature_counts + cluster2.feature_counts)
 
-
 def cluster_likelihood(num_subjects, feature_counter):
     if len(feature_sizes) == 0 and len(feature_prior_counts) == 0:
         feature_count_freqs = Counter(feature_counter.values())
@@ -90,12 +89,15 @@ class Cluster:
         self.feature_counts = Counter(features)
     self.cluster_similarity = {}
     Cluster.count += 1
+
   def close(self):
     del self.subjects
     del self.feature_counts
-    del self.lik  
+    del self.lik
+
   def set_lik(self):
     self.lik = cluster_likelihood(len(self.subjects), self.feature_counts)
+
   def merge(self, other_cluster, sim=""):
     self.subjects += other_cluster.subjects
     self.feature_counts += other_cluster.feature_counts
@@ -136,7 +138,7 @@ def initialise():
          feature_totals[feature] += 1
  total_num_subjects = max(total_num_subjects, len(cluster_list))
  try:
-     F=open(sys.argv[2], "r")
+     F = open(sys.argv[2], "r")
      for line in F:
          d = line.strip().split()
          feature_prior_counts[d[0]] = int(d[1])
@@ -150,7 +152,7 @@ def initialise():
      cl.set_lik()
      Cluster.lik += cl.lik
  for i in range(Cluster.count - 1):
-     for j in range(i+1, Cluster.count):
+     for j in range(i + 1, Cluster.count):
          sim = cluster_similarity(cluster_list[i], cluster_list[j])
          cluster_list[i].cluster_similarity[cluster_list[j]] = sim
          cluster_list[j].cluster_similarity[cluster_list[i]] = sim
@@ -158,7 +160,7 @@ def initialise():
 
 
 def cluster_similarity(cluster1, cluster2):
-    sim = cluster(cluster1,cluster2) - cluster1.lik - cluster2.lik
+    sim = cluster(cluster1, cluster2) - cluster1.lik - cluster2.lik
     return sim
 
 
