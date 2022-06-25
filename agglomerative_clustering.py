@@ -32,7 +32,7 @@ def cluster_likelihood(num_subjects, feature_counter):
     for f in feature_sizes:
         if f not in feature_counter:
             feature_cluster_prior_count = int(num_subjects / 2.0) if f not in feature_prior_counts else feature_prior_counts[f]
-            p = (feature_cluster_prior_count + 1) / float((total_num_subjects + 2)*feature_sizes[f])
+            p = (feature_cluster_prior_count + 1) / float((total_num_subjects + 2) * feature_sizes[f])
             feature_cluster_alpha, feature_cluster_beta = beta_parameters(num_features, p)
 
             likelihood += cluster_likel(num_subjects * feature_sizes[f], 0, feature_cluster_alpha, feature_cluster_beta)
@@ -62,8 +62,7 @@ def beta_parameters(n, mu):
 
 def cluster_likel(n, x, alpha=1, beta=1):
   if x > n:
-      sys.stderr.write("Error: x>n\n")
-      exit()
+      sys.exit("Error: x>n\n")
   return lgamma(alpha + beta) + lgamma(alpha + x) + lgamma(beta + n - x) - lgamma(alpha) - lgamma(beta) - lgamma(alpha + beta + n)
 
 
@@ -73,11 +72,6 @@ def cluster_likel(n, x, alpha=1, beta=1):
 ########################################################################################
 
 class Cluster:
-    '''Creates a Cluster with subjects as attribute and the following methods:
-    1/ delete clusters if merged
-    2/ merge two clusters
-    3/ evaluate similarity'''
-
   count = 0
   lik = 0
   def __init__(self, subject, features=[]):
