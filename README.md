@@ -30,7 +30,7 @@ U3	C3,C6
 Perform clustering and save results by running the following:
 
 ```bash
-cat toy_data.txt | agglomerative_clustering_sequential.py > results.txt
+cat Toy_data.txt | agglomerative_clustering_sequential.py > results.txt
 ```
 
 ## Outputs
