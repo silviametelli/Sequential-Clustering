@@ -142,7 +142,8 @@ def initialise():
 
   for line in F:
     if count <= num_users:
-         key_val = line.strip().split("\t")
+         key_val = line.strip().replace("U","").replace("C","").split("\t")
+
          try:
              cluster_list += [Cluster(key_val[0], key_val[1].split(feature_separator))]
              try:
@@ -315,7 +316,8 @@ def initialise2(cluster_list_old, Reading_file):
     #read last_line+1
     line = linecache.getline(Reading_file, last_line + 1)
     #create cluster with data from line las_line+1
-    key_val = line.strip().split("\t")
+    key_val = line.strip().replace("U","").replace("C","").split("\t")
+
 
     try:
         cluster_list += [Cluster(key_val[0],key_val[1].split(feature_separator))]

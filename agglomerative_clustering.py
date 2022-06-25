@@ -124,11 +124,12 @@ def initialise():
      None
  total_num_subjects = 0
  for line in sys.stdin:
-     key_val = line.strip().split("\t")
+     key_val = line.strip().replace("U","").replace("C","").split("\t")
      try:
          cluster_list += [Cluster(key_val[0], key_val[1].split(feature_separator))]
          try:
              total_num_subjects = max(total_num_subjects, int(key_val[0]))
+
          except:
              None
      except:
