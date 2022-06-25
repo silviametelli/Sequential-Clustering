@@ -53,7 +53,7 @@ def cluster_likelihood(num_subjects, feature_counter):
     return likelihood
 
 
-def beta_parameters(n,mu):
+def beta_parameters(n, mu):
      s = ((mu * (1 - mu)) / float(n))**0.5
      a = ((1 - mu) / float(s)- 1 / float(mu)) * (mu**2)
      b = a * (1 / float(mu) - 1)
@@ -80,7 +80,7 @@ class Cluster:
 
   count = 0
   lik = 0
-  def __init__(self, subject, features = []):
+  def __init__(self, subject, features=[]):
     try:
         self.subjects = [int(subject)]
     except:
