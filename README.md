@@ -1,4 +1,4 @@
-# Bayesian (sequential) agglomerative clustering for interaction network data
+# Bayesian (sequential) agglomerative clustering
 ## Community detection in interaction networks
 
 agglomerative_clustering.py performs model-based agglomerative clustering as follows:
