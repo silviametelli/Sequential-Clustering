@@ -63,7 +63,8 @@ def beta_parameters(n, mu):
 def cluster_likel(n, x, alpha=1, beta=1):
   if x > n:
       sys.exit("Error: x>n\n")
-  return lgamma(alpha + beta) + lgamma(alpha + x) + lgamma(beta + n - x) - lgamma(alpha) - lgamma(beta) - lgamma(alpha + beta + n)
+  return lgamma(alpha + beta) + lgamma(alpha + x) + lgamma(beta + n - x) - lgamma(alpha) -\
+         lgamma(beta) - lgamma(alpha + beta + n)
 
 
 
