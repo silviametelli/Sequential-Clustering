@@ -24,8 +24,9 @@ Data needs to be in the following format:
 U1	C1,C2,C3,C4
 U2	C1,C2,C3,C5
 U3	C3,C6
-U4	C1,C6
-U5	C2,C5
+U4	C3,C6
+U5	C1,C2,C3,C8
+U6	C1,C2,C3,C9
 ```
 ## Run clustering algorithm 
 
